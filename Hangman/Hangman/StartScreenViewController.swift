@@ -10,10 +10,20 @@ import UIKit
 
 class StartScreenViewController: UIViewController {
 
+    @IBOutlet weak var hangmanImage: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        var imageList = [UIImage]()
+        
+        for i in 0...7 {
+            let imageName = "hangman\(i).png"
+            let image = UIImage(named:imageName)
+            imageList.append(image!)
+        }
+        
+        self.hangmanImage.animationImages = imageList
+        self.hangmanImage.animationDuration = 4.0
+        self.hangmanImage.startAnimating()
     }
 
     override func didReceiveMemoryWarning() {

@@ -28,7 +28,8 @@ class GameViewController: UIViewController {
         correctGuesses = [Character]()
         incorrectGuesses = [Character]()
         showGif()
-        print(phrase)
+        updateCorrect()
+        print(phrase!)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?){
@@ -60,19 +61,29 @@ class GameViewController: UIViewController {
     }
     
     func invalidInputAlert() {
-        print("Invalid input")
+        let alert = UIAlertController(title: "Invalid Input", message: "Enter a single character!", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func duplicateInputAlert() {
+        let alert = UIAlertController(title: "Duplicate Input", message: "You've already guessed that character!", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func guessLetter(character: Character) {
-        for i in phrase!.characters {
-            if character == i {
-                correctGuesses!.append(character)
-                updateCorrect()
-                return
-            }
+        if incorrectGuesses!.contains(character) || correctGuesses!.contains(character) {
+            duplicateInputAlert()
         }
-        incorrectGuesses!.append(character)
-        updateIncorrect()
+        else if phrase!.characters.contains(character) {
+            correctGuesses!.append(character)
+            updateCorrect()
+        }
+        else {
+            incorrectGuesses!.append(character)
+            updateIncorrect()
+        }
     }
     
     func updateCorrect() {
@@ -83,6 +94,12 @@ class GameViewController: UIViewController {
     func updateIncorrect() {
         showGif()
         showIncorrectLetters()
+    }
+    
+    func winnerAlert() {
+        let alert = UIAlertController(title: "You Win!", message: "Congrats! You've won! The word was: '\(phrase!)'", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func showIncorrectLetters() {
@@ -98,24 +115,33 @@ class GameViewController: UIViewController {
     
     func showGif() {
         let incorrectGuessCount = incorrectGuesses!.count
-        let newSource = "hangman\(incorrectGuessCount+1).gif"
+        let newSource = "hangman\(incorrectGuessCount).png"
         hangmanImage.image = UIImage(named: newSource)
     }
     
     func buildCorrectWord () -> String {
         var filledWord:String = ""
-        for i in phrase!.characters {
+        var everMatched = true
+        let newPhrase = phrase!.stringByReplacingOccurrencesOfString(" ", withString: "\n")
+        for i in newPhrase.characters {
             var matched = false
             for j in correctGuesses! {
-                if i == j || i == " "{
+                if i == j{
                     matched = true
-                    filledWord += String(i)
+                    filledWord += "\(String(i)) "
                     break
                 }
             }
-            if (!matched) {
-                filledWord += "_"
+            if (i == "\n") {
+                filledWord += "\n"
             }
+            if (!matched) {
+                everMatched = false
+                filledWord += "_ "
+            }
+        }
+        if everMatched {
+            winnerAlert()
         }
         return filledWord
     }
