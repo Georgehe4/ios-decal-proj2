@@ -5,6 +5,7 @@
 //  Created by Shawn D'Souza on 3/3/16.
 //  Copyright © 2016 Shawn D'Souza. All rights reserved.
 //
+//Images credited to "KittieLovesBlood" on photobucket
 
 import UIKit
 
@@ -115,6 +116,7 @@ class GameViewController: UIViewController {
     
     func showGif() {
         let incorrectGuessCount = incorrectGuesses!.count
+        //Images credited to "KittieLovesBlood" on photobucket
         let newSource = "hangman\(incorrectGuessCount).png"
         hangmanImage.image = UIImage(named: newSource)
     }
