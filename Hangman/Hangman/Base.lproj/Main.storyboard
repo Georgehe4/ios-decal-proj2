@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -122,13 +123,14 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="pDC-qC-1wo">
                                 <rect key="frame" x="81" y="103" width="439" height="447"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="447" id="a4o-fu-59n"/>
-                                    <constraint firstAttribute="width" constant="439" id="mw3-e7-ral"/>
+                                    <constraint firstAttribute="width" secondItem="pDC-qC-1wo" secondAttribute="height" multiplier="439:447" id="9fp-Fw-MTy"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="pDC-qC-1wo" secondAttribute="trailing" constant="60" id="BsZ-6u-yWU"/>
+                            <constraint firstItem="pDC-qC-1wo" firstAttribute="leading" secondItem="xvB-FI-tR4" secondAttribute="leadingMargin" constant="61" id="k5r-Y8-c2I"/>
                             <constraint firstItem="snZ-g2-g6d" firstAttribute="centerX" secondItem="xvB-FI-tR4" secondAttribute="centerX" id="ky3-hC-hv3"/>
                             <constraint firstItem="snZ-g2-g6d" firstAttribute="top" secondItem="3Qh-FB-UEb" secondAttribute="bottom" constant="8" id="lu7-Qb-EP6"/>
                             <constraint firstItem="pDC-qC-1wo" firstAttribute="top" secondItem="3Qh-FB-UEb" secondAttribute="bottom" constant="39" id="o9s-zw-c7K"/>

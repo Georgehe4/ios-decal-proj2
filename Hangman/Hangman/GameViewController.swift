@@ -127,15 +127,16 @@ class GameViewController: UIViewController {
         let newPhrase = phrase!.stringByReplacingOccurrencesOfString(" ", withString: "\n")
         for i in newPhrase.characters {
             var matched = false
+            if (i == "\n") {
+                filledWord += "\n"
+                continue
+            }
             for j in correctGuesses! {
                 if i == j{
                     matched = true
                     filledWord += "\(String(i)) "
                     break
                 }
-            }
-            if (i == "\n") {
-                filledWord += "\n"
             }
             if (!matched) {
                 everMatched = false
