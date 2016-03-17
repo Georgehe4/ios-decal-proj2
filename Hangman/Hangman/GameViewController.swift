@@ -13,12 +13,13 @@ class GameViewController: UIViewController {
     var incorrectGuesses: [Character]?
     var correctGuesses: [Character]?
     var phrase: String?
-    
+    var CAPACITY = 7
     @IBOutlet weak var incorrectGuessBox: UILabel!
     @IBOutlet weak var guessBox: UITextField!
     @IBOutlet weak var hangmanWord: UILabel!
     @IBOutlet weak var hangmanImage: UIImageView!
     @IBOutlet weak var guessButton: UIButton!
+    @IBOutlet weak var startOverButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,8 +74,55 @@ class GameViewController: UIViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    func checkIfWinner() -> Bool {
+        var filledWord:String = ""
+        var everMatched = true
+        let newPhrase = phrase!.stringByReplacingOccurrencesOfString(" ", withString: "\n")
+        for i in newPhrase.characters {
+            var matched = false
+            if (i == "\n") {
+                filledWord += "\n"
+                continue
+            }
+            for j in correctGuesses! {
+                if i == j{
+                    matched = true
+                    filledWord += "\(String(i)) "
+                    break
+                }
+            }
+            if (!matched) {
+                everMatched = false
+                filledWord += "_ "
+            }
+        }
+        return everMatched
+    }
+    
+    func isNotValidLetter(chr: Character) -> Bool {
+        if (!(chr >= "a" && chr <= "z") && !(chr >= "A" && chr <= "Z") ) {
+            return false
+        }
+        return true
+    }
+    
+    func invalidCharacterAlert() {
+        let alert = UIAlertController(title: "Invalid Input", message: "Enter alphabet letter!", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
     func guessLetter(character: Character) {
-        if incorrectGuesses!.contains(character) || correctGuesses!.contains(character) {
+        if isNotValidLetter(character) {
+            invalidCharacterAlert()
+        }
+        if checkIfWinner() {
+            alreadyWinnerAlert()
+            return
+        }
+        else if incorrectGuesses!.count >= CAPACITY {
+            loserAlert()
+        }
+        else if incorrectGuesses!.contains(character) || correctGuesses!.contains(character) {
             duplicateInputAlert()
         }
         else if phrase!.characters.contains(character) {
@@ -84,6 +132,9 @@ class GameViewController: UIViewController {
         else {
             incorrectGuesses!.append(character)
             updateIncorrect()
+            if incorrectGuesses!.count >= CAPACITY {
+                loserAlert()
+            }
         }
     }
     
@@ -97,8 +148,20 @@ class GameViewController: UIViewController {
         showIncorrectLetters()
     }
     
+    func loserAlert() {
+        let alert = UIAlertController(title: "Oh no, you've lost!", message: "Oh no, you've lost! The word was: '\(phrase!)'", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     func winnerAlert() {
         let alert = UIAlertController(title: "You Win!", message: "Congrats! You've won! The word was: '\(phrase!)'", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func alreadyWinnerAlert() {
+        let alert = UIAlertController(title: "You've already won!", message: "Congrats! You've already won! The word was: '\(phrase!)'", preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
@@ -149,11 +212,20 @@ class GameViewController: UIViewController {
         return filledWord
     }
     
+    @IBAction func refreshWord(sender: UIBarButtonItem) {
+        let hangmanPhrases = HangmanPhrases()
+        phrase = hangmanPhrases.getRandomPhrase()
+        correctGuesses = [Character]()
+        incorrectGuesses = [Character]()
+        showGif()
+        updateCorrect()
+        print(phrase!)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
     /*
     // MARK: - Navigation
